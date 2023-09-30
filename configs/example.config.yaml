@@ -1,0 +1,9 @@
+# remove `example.` prefix and this comment to get the structure for prepared configuration layout
+---
+logging:
+  level: debug
+  log_file:
+    enabled: true
+    file_path: logs/all-logs.log
+  log_console: true
+

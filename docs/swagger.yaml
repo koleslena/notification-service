@@ -1,0 +1,278 @@
+basePath: /api
+definitions:
+  models.Client:
+    properties:
+      id:
+        type: integer
+      phone_code:
+        type: string
+      phone_number:
+        example: 79998887766
+        type: integer
+      tag:
+        type: string
+      time_zone:
+        type: string
+    type: object
+  models.ClientRequest:
+    properties:
+      phone_code:
+        type: string
+      phone_number:
+        type: integer
+      tag:
+        type: string
+      time_zone:
+        type: string
+    type: object
+  models.Filter:
+    properties:
+      phone_code:
+        type: string
+      tag:
+        type: string
+    type: object
+  models.Message:
+    properties:
+      client_id:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      notification_id:
+        type: integer
+      state:
+        $ref: '#/definitions/models.State'
+      text:
+        type: string
+    type: object
+  models.Notification:
+    properties:
+      created_at:
+        example: "2023-10-29T15:04:05Z"
+        format: date-time
+        type: string
+      end_at:
+        example: "2023-10-29T15:04:05Z"
+        format: date-time
+        type: string
+      filter:
+        $ref: '#/definitions/models.Filter'
+      id:
+        type: integer
+      text:
+        type: string
+    type: object
+  models.NotificationRequest:
+    properties:
+      created_at:
+        type: string
+      end_at:
+        type: string
+      filter:
+        $ref: '#/definitions/models.Filter'
+      text:
+        type: string
+    type: object
+  models.State:
+    enum:
+    - CREATED
+    - ERROR
+    - SENT
+    type: string
+    x-enum-varnames:
+    - Created
+    - Error
+    - Sent
+host: localhost:8000
+info:
+  contact:
+    name: koleslena
+  description: This is a notification service
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Notification Service API
+  version: "1.0"
+paths:
+  /clients:
+    post:
+      operationId: create-client
+      parameters:
+      - description: client data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.Client'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ClientRequest'
+        "400":
+          description: Error
+          schema:
+            type: string
+        "502":
+          description: Error
+          schema:
+            type: string
+      summary: add a new client
+  /clients/{id}:
+    delete:
+      operationId: delete-client
+      parameters:
+      - description: The UUID of a client
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Error
+          schema:
+            type: string
+      summary: delete a client by ID
+    put:
+      operationId: update-client
+      parameters:
+      - description: The UUID of a client
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ClientRequest'
+        "404":
+          description: Error
+          schema:
+            type: string
+        "502":
+          description: Error
+          schema:
+            type: string
+      summary: edit a client by ID
+  /healthchecker:
+    get:
+      consumes:
+      - '*/*'
+      description: get the status of server.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: string
+        "403":
+          description: Error
+          schema:
+            type: string
+        "404":
+          description: Error
+          schema:
+            type: string
+      summary: Show the status of server.
+      tags:
+      - root
+  /notifications:
+    get:
+      operationId: find-notifications
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Notification'
+            type: array
+        "502":
+          description: Error
+          schema:
+            type: string
+      summary: get all items in the notification list
+    post:
+      operationId: create-notification
+      parameters:
+      - description: notification data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.Notification'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.NotificationRequest'
+        "400":
+          description: Error
+          schema:
+            type: string
+        "502":
+          description: Error
+          schema:
+            type: string
+      summary: add a new notification
+  /notifications/{id}:
+    delete:
+      operationId: delete-notification
+      parameters:
+      - description: The UUID of a notification
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Error
+          schema:
+            type: string
+      summary: delete a notification by ID
+    put:
+      operationId: update-notification
+      parameters:
+      - description: The UUID of a notification
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.NotificationRequest'
+        "404":
+          description: Error
+          schema:
+            type: string
+        "502":
+          description: Error
+          schema:
+            type: string
+      summary: edit a notification by ID
+schemes:
+- http
+swagger: "2.0"
